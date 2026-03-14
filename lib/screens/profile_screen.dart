@@ -10,6 +10,7 @@ import 'orders_screen.dart';
 import 'favorites_screen.dart';
 import 'addresses_screen.dart';
 import 'settings_screen.dart';
+import 'verify_email_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -174,21 +175,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   if (!user.isEmailVerified)
-                    Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        context.tr('email_not_verified'),
-                        style: TextStyle(
-                          color: Colors.orange,
-                          fontSize: 12,
+                    GestureDetector(
+                      onTap: () async {
+                        final verified = await Navigator.push<bool>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => VerifyEmailScreen(
+                              email: user.email,
+                            ),
+                          ),
+                        );
+                        if (verified == true && mounted) {
+                          context.read<AuthProvider>().getCurrentUser();
+                        }
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              context.tr('email_not_verified'),
+                              style: TextStyle(
+                                color: Colors.orange,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 10,
+                              color: Colors.orange,
+                            ),
+                          ],
                         ),
                       ),
                     ),

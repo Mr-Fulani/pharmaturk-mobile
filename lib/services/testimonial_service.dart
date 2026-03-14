@@ -29,7 +29,11 @@ class TestimonialService {
     try {
       final response = await _apiClient.dio.post(
         '/feedback/testimonials/',
-        data: testimonial.toJson(),
+        data: {
+          'text': testimonial.content,
+          'rating': testimonial.rating,
+          'media_items': [],
+        },
       );
       return Testimonial.fromJson(response.data);
     } catch (e) {

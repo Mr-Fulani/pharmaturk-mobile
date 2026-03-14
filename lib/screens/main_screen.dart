@@ -5,6 +5,7 @@ import '../l10n/app_localizations.dart';
 import 'home_screen.dart';
 import 'catalog_screen.dart';
 import 'cart_screen.dart';
+import 'favorites_screen.dart';
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -22,10 +23,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   late int _currentIndex;
 
-  final List<Widget> _screens = [
+  List<Widget> _buildScreens() => [
     const HomeScreen(),
     const CatalogScreen(),
     const CartScreen(),
+    FavoritesScreen(onGoShopping: () => setState(() => _currentIndex = 1)),
     const ProfileScreen(),
   ];
 
@@ -44,7 +46,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: _screens,
+        children: _buildScreens(),
       ),
       bottomNavigationBar: Consumer2<CartProvider, FavoriteProvider>(
         builder: (context, cartProvider, favoriteProvider, child) {
@@ -81,6 +83,19 @@ class _MainScreenState extends State<MainScreen> {
                   child: const Icon(Icons.shopping_cart),
                 ),
                 label: context.tr('cart'),
+              ),
+              BottomNavigationBarItem(
+                icon: Badge(
+                  isLabelVisible: favoriteProvider.favoritesCount > 0,
+                  label: Text('${favoriteProvider.favoritesCount}'),
+                  child: const Icon(Icons.favorite_outline),
+                ),
+                activeIcon: Badge(
+                  isLabelVisible: favoriteProvider.favoritesCount > 0,
+                  label: Text('${favoriteProvider.favoritesCount}'),
+                  child: const Icon(Icons.favorite),
+                ),
+                label: context.tr('favorites'),
               ),
               BottomNavigationBarItem(
                 icon: const Icon(Icons.person_outline),

@@ -9,7 +9,10 @@ import '../l10n/app_localizations.dart';
 import 'product_detail_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
-  const FavoritesScreen({super.key});
+  /// При открытии как вкладка — переход на каталог при нажатии «Перейти к покупкам».
+  final VoidCallback? onGoShopping;
+
+  const FavoritesScreen({super.key, this.onGoShopping});
 
   @override
   State<FavoritesScreen> createState() => _FavoritesScreenState();
@@ -117,7 +120,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
+              if (widget.onGoShopping != null) {
+                widget.onGoShopping!();
+              } else if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),

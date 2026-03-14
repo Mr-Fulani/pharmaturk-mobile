@@ -98,13 +98,17 @@ class AuthService {
     }
   }
 
+  Future<void> requestVerificationCode() async {
+    await _apiClient.dio.post('/users/request-verification-code/');
+  }
+
   Future<void> verifyEmail(String email, String code) async {
     try {
       await _apiClient.dio.post(
         '/users/verify-email/',
         data: {
           'email': email,
-          'code': code,
+          'verification_code': code,
         },
       );
     } catch (e) {

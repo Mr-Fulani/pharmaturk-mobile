@@ -16,3 +16,6 @@ export 'favorites_screen.dart';
 export 'addresses_screen.dart';
 export 'settings_screen.dart';
 export 'static_page_screen.dart';
+export 'testimonials_screen.dart';
+export 'verify_email_screen.dart';
+export 'public_user_profile_screen.dart';
