@@ -16,6 +16,9 @@ import 'search_screen.dart';
 import 'visual_search_screen.dart';
 import 'testimonials_screen.dart';
 import 'public_user_profile_screen.dart';
+import 'brands_screen.dart';
+import '../widgets/brand_card.dart';
+import '../utils/app_spacing.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -71,15 +74,15 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildAppBar(),
             _buildSearchBar(),
             _buildBannersAtPosition('main'),
-            _sliverGap(24),
+            _sliverGap(AppSpacing.sectionGap),
             _buildBrands(),
             _buildBannersAtPosition('after_brands'),
-            _sliverGap(24),
-            _buildCategories(),
-            _sliverGap(24),
+            _sliverGap(AppSpacing.sectionGap),
+            _buildCategoriesWithCatalog(),
+            _sliverGap(AppSpacing.sectionGap),
             _buildTestimonials(),
             _buildBannersAtPosition('before_footer'),
-            _sliverGap(24),
+            _sliverGap(AppSpacing.sectionGap),
             _buildFeaturedProducts(),
             _buildBannersAtPosition('after_popular_products'),
             const SliverToBoxAdapter(
@@ -209,14 +212,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: SizedBox(
-              height: 200,
+              height: 240,
               child: CarouselSlider.builder(
                 itemCount: bannersWithMedia.length,
                 itemBuilder: (context, index, _) {
                   return _BannerCard(banner: bannersWithMedia[index]);
                 },
                 options: CarouselOptions(
-                height: 200,
+                height: 240,
                 viewportFraction: 0.92,
                 enlargeCenterPage: true,
                 enableInfiniteScroll: false,
@@ -312,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -337,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               SizedBox(
                 height: 440,
                 child: ListView.builder(
@@ -368,7 +371,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCategories() {
+  Widget _buildCategoriesWithCatalog() {
     return Consumer<CatalogProvider>(
       builder: (context, provider, child) {
         if (provider.isLoadingCategories) {
@@ -386,18 +389,33 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    context.tr('categories'),
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        context.tr('categories'),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton.icon(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CatalogScreen(),
+                          ),
+                        ),
+                        icon: const Icon(Icons.category, size: 20),
+                        label: Text(context.tr('catalog')),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(
@@ -429,12 +447,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -490,53 +508,55 @@ class _HomeScreenState extends State<HomeScreen> {
           return const SliverToBoxAdapter(child: SizedBox.shrink());
         }
 
+        final sorted = List<Brand>.from(provider.brands)
+          ..sort((a, b) {
+            final ac = int.tryParse(a.productsCount) ?? 0;
+            final bc = int.tryParse(b.productsCount) ?? 0;
+            return bc.compareTo(ac);
+          });
+        final topBrands = sorted.take(6).toList();
+
         return SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    context.tr('popular_brands'),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                Text(
+                  context.tr('popular_brands'),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: GridView.builder(
+                GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 0.75,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.9,
                     ),
-                    itemCount: provider.brands.length,
+                    itemCount: topBrands.length,
                     itemBuilder: (context, index) {
-                      final brand = provider.brands[index];
-                      return _BrandCard(brand: brand);
+                      return BrandCard(brand: topBrands[index], compact: true);
                     },
                   ),
-                ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 Center(
                   child: TextButton(
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const CatalogScreen(),
+                        builder: (_) => const BrandsScreen(),
                       ),
                     ),
                     child: Text(context.tr('all_brands')),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
               ],
             ),
           ),
@@ -587,7 +607,7 @@ class _BannerCard extends StatelessWidget {
                     );
                   },
                   options: CarouselOptions(
-                    height: 200,
+                    height: 240,
                     viewportFraction: 1.0,
                     enableInfiniteScroll: false,
                     autoPlay: media.length > 1,
@@ -1181,139 +1201,3 @@ class _TestimonialCardState extends State<_TestimonialCard> {
   }
 }
 
-class _BrandCard extends StatelessWidget {
-  final Brand brand;
-
-  const _BrandCard({required this.brand});
-
-  static bool _isVideoUrl(String? url) {
-    if (url == null || url.isEmpty) return false;
-    final path = url.split('?').first.toLowerCase();
-    return path.endsWith('.mp4') || path.endsWith('.webm') ||
-        path.endsWith('.mov') || path.endsWith('.m4v');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaUrl = brand.cardMediaUrl ?? brand.logo;
-    final url = resolveImageUrlOrNull(mediaUrl);
-    final isVideo = _isVideoUrl(mediaUrl);
-    final logoUrl = resolveImageUrlOrNull(brand.logo);
-
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => CatalogScreen(
-            brandId: brand.id,
-            brandName: brand.name,
-          ),
-        ),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              if (url != null && !isVideo)
-                CachedNetworkImage(
-                  imageUrl: url,
-                  fit: BoxFit.cover,
-                  placeholder: (_, __) => Container(
-                    color: Colors.grey[300],
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-                  errorWidget: (_, __, ___) => Container(
-                    color: Colors.grey[300],
-                    child: _buildContent(context, showLogo: false),
-                  ),
-                )
-              else
-                Container(
-                  color: Colors.grey[300],
-                  child: _buildContent(context, showLogo: false),
-                ),
-              Container(
-                color: Colors.black.withOpacity(0.35),
-              ),
-              Center(
-                child: _buildContent(
-                  context,
-                  showLogo: logoUrl != null && !_isVideoUrl(brand.logo),
-                  logoUrl: logoUrl,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContent(BuildContext context, {bool showLogo = false, String? logoUrl}) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (showLogo && logoUrl != null) ...[
-            CachedNetworkImage(
-              imageUrl: logoUrl,
-              height: 36,
-              fit: BoxFit.contain,
-              color: Colors.white,
-              colorBlendMode: BlendMode.srcIn,
-              errorWidget: (_, __, ___) => const SizedBox.shrink(),
-            ),
-            const SizedBox(height: 8),
-          ],
-          Text(
-            brand.name,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          if (brand.description != null && brand.description!.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(
-              brand.description!,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white.withOpacity(0.9),
-              ),
-            ),
-          ],
-          if (brand.productsCount.isNotEmpty && brand.productsCount != '0') ...[
-            const SizedBox(height: 4),
-            Text(
-              '${brand.productsCount} ${context.tr('items')}',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.white.withOpacity(0.75),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}

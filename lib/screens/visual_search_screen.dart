@@ -219,7 +219,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> {
           '${products.length} ${context.tr('items')}',
           style: TextStyle(color: Colors.grey[600], fontSize: 14),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

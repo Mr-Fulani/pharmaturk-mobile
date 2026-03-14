@@ -57,14 +57,18 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   Future<void> _loadProducts() async {
     final provider = context.read<CatalogProvider>();
-    
+
     if (widget.categorySlug != null) {
       provider.setCategoryFilter(widget.categorySlug);
+    } else {
+      provider.setCategoryFilter(null);
     }
     if (widget.brandId != null) {
       provider.setBrandFilter(widget.brandId);
+    } else {
+      provider.setBrandFilter(null);
     }
-    
+
     await provider.getProducts(refresh: true);
   }
 

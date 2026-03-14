@@ -130,7 +130,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen> {
                 if (!auth.isAuthenticated)
                   SliverToBoxAdapter(
                     child: Container(
-                      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: Colors.teal.withOpacity(0.1),
@@ -166,7 +166,7 @@ class _TestimonialsScreenState extends State<TestimonialsScreen> {
                     ),
                   ),
                 SliverPadding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, i) => Padding(

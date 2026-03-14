@@ -434,7 +434,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             SizedBox(
               height: 200,
               child: ListView.builder(
