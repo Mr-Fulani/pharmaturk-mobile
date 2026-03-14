@@ -1,0 +1,23 @@
+# PharmaTurk Mobile — standalone Docker Compose
+# Backend API запускается отдельно (основной проект PharmaTurk).
+# Для локального backend: API_BASE_URL=http://host.docker.internal:8000
+
+services:
+  mobile-web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - API_BASE_URL=${API_BASE_URL:-http://host.docker.internal:8000}
+    # На Mac M1/M2 возможен segfault — используйте локально: flutter run
+    command: >
+      sh -c "flutter run --web-hostname 0.0.0.0 --web-port 8080 --dart-define=API_BASE_URL=$${API_BASE_URL}"
+
+  mobile-build:
+    build: .
+    environment:
+      - API_BASE_URL=${API_BASE_URL:-https://api.pharmaturk.com}
+    command: >
+      sh -c "flutter build apk --release --dart-define=API_BASE_URL=$${API_BASE_URL}"
+    volumes:
+      - ./build:/app/build
