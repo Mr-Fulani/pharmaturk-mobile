@@ -157,6 +157,23 @@ flutter clean && flutter pub get && dart run build_runner build --delete-conflic
 - `intl` — Интернационализация
 - `url_launcher`, `share_plus`, `image_picker` — Нативные функции
 
+## Публикация в удалённый репозиторий
+
+1. Создайте пустой репозиторий на GitHub или GitLab (например, `pharmaturk-mobile`).
+2. Добавьте remote и выполните push:
+
+```bash
+git remote add origin https://github.com/YOUR_ORG/pharmaturk-mobile.git
+git push -u origin main
+```
+
+Или для SSH:
+
+```bash
+git remote add origin git@github.com:YOUR_ORG/pharmaturk-mobile.git
+git push -u origin main
+```
+
 ## Лицензия
 
 MIT License
